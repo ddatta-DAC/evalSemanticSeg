@@ -10,5 +10,5 @@ setup(name='evalSemanticSeg',
       packages=['evalSemanticSeg'],
       install_requires=[
           'numpy',
-      ]
+      ],
       zip_safe=False)

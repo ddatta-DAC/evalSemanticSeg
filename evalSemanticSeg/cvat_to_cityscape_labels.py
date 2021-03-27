@@ -1,0 +1,22 @@
+cvat_2_cityscapes = {
+    'regulatory_sign': 'trafficsign',
+    'other_sign': 'trafficsign',
+    'advisory_sign': 'trafficsign',
+    'construction_sign': 'trafficsign',
+    'workzone': 'trafficsign',
+    'barrier': 'fence',
+    'bike': 'bicycle',
+    'person': 'person',
+    'truck': 'truck',
+    'pickup': 'truck',
+    'terrain': 'terrain',
+    'wall': 'wall',
+    'sky': 'sky',
+    'vegetation': 'vegetation',
+    'drivable_road': 'road',
+    'car': 'car',
+    'bus': 'bus',
+    'intersection': 'road',
+    'bridge': 'bridge',
+    'pavement_distress': 'sidewalk'
+}

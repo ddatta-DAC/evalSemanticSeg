@@ -8,7 +8,8 @@ import tensorflow as tf
 
 class metrics_object:
     def __init__(self,num_classes=19):
-        self.metric = tf.keras.metrics.MeanIoU(num_classes=2)
+        self.metric = tf.keras.metrics.MeanIoU(num_classes=num_classes)
+        self.reset()
 
     def reset(self):
         self.metric.reset_states()
@@ -22,7 +23,8 @@ class metrics_object:
         self.metric.update_state(
             y_pred, y_true
         )
-        return self.metric.result().numpy()
-
+        self.reset()
+        result = self.metric.result().numpy()
+        return result
 
 

@@ -1,4 +1,9 @@
-LABEL_DATA_name2id = {
+from collections import OrderedDict
+
+'''
+Original lables
+'''
+LABEL_DATA_name2id = OrderedDict({
     'unlabeled': 0,
     'egovehicle': 1,
     'rectificationborder': 2,
@@ -34,4 +39,11 @@ LABEL_DATA_name2id = {
     'motorcycle': 32,
     'bicycle': 33,
     'licenseplate': -1
-}
+})
+
+target_classLabels = ('road', 'sidewalk',
+            'building', 'wall', 'fence', 'pole',
+            'traffic light', 'traffic sign', 'vegetation', 'terrain', 'sky',
+            'person', 'rider', 'car', 'truck', 'bus', 'train', 'motorcycle',
+            'bicycle'
+)

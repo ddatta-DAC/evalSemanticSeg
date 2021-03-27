@@ -4,19 +4,19 @@
 # --------------------------------------
 import sys
 sys.path.append('./..')
-from  . import cityscapes_label_data
-csLabelData_name2id = cityscapes_label_data.LABEL_DATA_name2id
 import numpy as np
+import cityscapes_label_data
+
+csLabelData_name2id = cityscapes_label_data.LABEL_DATA_name2id
 
 class labelIdConverter():
     cityscape_label_ids = list(csLabelData_name2id.values())
-    def __init__():
+    def __init__(self):
         return
     @staticmethod
     def _convert_(input_label_id: int):
         # Currently do an Random transform
-        labelIdConverter.cityscape_label_ids
-        return  labelIdConverter.cityscape_label_ids[input_label_id]+2
+        return labelIdConverter.cityscape_label_ids[input_label_id]+2
 
 
     @staticmethod

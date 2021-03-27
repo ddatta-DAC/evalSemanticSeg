@@ -8,7 +8,14 @@ setup(name='evalSemanticSeg',
       author_email='ddatta@cs.vt.com',
       license='MIT',
       packages=['evalSemanticSeg'],
+      python_requires='>=3.5',
       install_requires=[
-          'numpy',
+            'numpy',
+            'pyyaml',
+            'tensorflow>=2.4',
+            'pandas',
+            'opencv-python>=3.4',
+            'scikit-image',
+            'scikit-learn'
       ],
       zip_safe=False)

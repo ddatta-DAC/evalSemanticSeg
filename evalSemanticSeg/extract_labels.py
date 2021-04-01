@@ -8,6 +8,8 @@ from pprint import pprint
 import pandas as pd
 import numpy as np
 import cv2
+import os
+import sys
 from operator import itemgetter
 from collections import OrderedDict, defaultdict
 try:
@@ -27,6 +29,9 @@ cvat_2_cityscapes = cvat_to_cityscape_labels.cvat_2_cityscapes
 
 
 # ========================================================
+# Use model_output_sparse =True if input labels are 7,8,...33
+# Use model_output_sparse =True if input labels are 1,2,...19
+#=========================================================
 class anotationGen:
     '''
     Input file should
@@ -39,7 +44,7 @@ class anotationGen:
             file_col_sep=':',
             model_output_sparse = True
     ):
-
+        self.num_classes = 0
         if model_output_sparse:
             self.__build_type1_(
                 labelmap_file,
@@ -55,6 +60,11 @@ class anotationGen:
                 file_col_sep
             )
         print(self.color_to_synID)
+        global CS_label_names
+
+        self.synID_to_desc ={
+            k: CS_label_names[v-1] for k,v in self.synID_2_csID.items()
+        }
         return
 
     def __build_type1_(self,
@@ -194,6 +204,8 @@ class anotationGen:
             if csl[1] in valid_CS_labels:
                 self.csID_2_synID[csl[0]] = i
                 i+=1
+        self.synID_2_csID = { v:k for k,v in self.csID_2_synID.items()}
+        self.num_classes = len(self.csID_2_synID) + 1
         return
 
 
@@ -201,8 +213,8 @@ class anotationGen:
     # Take output of Semantic Segmentation and convert it to continuous label ids
     # [ Input is the output of SS Model ]
     # -----------------------------------------
-    def generateSynLabel(self, data_path=None):
-
+    def gen_SynLabel(self, data_path=None):
+        print('generateSynLabel', data_path)
         data = np.load(data_path)
 
         def _replace(val):
@@ -217,7 +229,7 @@ class anotationGen:
     # -----------------------------------------
     # Read in the segmented image, and generate continuous ids [ Input is the ground truth ]
     # -----------------------------------------
-    def processSegMask(self, img_path=None):
+    def process_SegMask(self, img_path=None):
         image = cv2.imread(
             img_path,
             cv2.IMREAD_COLOR
@@ -237,10 +249,29 @@ class anotationGen:
 '''
 # Sample code
 obj = anotationGen('./../labelmap.txt')
-
 res = obj.generateContLabel('./../4.jpg.npy')
 res = obj.processSegMask('./../tmp.png')
 '''
+
 # import os
 # print(os.getcwd())
-# obj = anotationGen('./../../labelmap.txt', model_output_sparse=True)
+# obj = anotationGen('./../../labelmap.txt', model_output_sparse=False)
+#
+# ss_op_path = './../../Data/seg_results/1464_SS_D_2efde18d0e007c1512bc73edc187170e0b1550af8cd8fe6fd4dedd6136811e6bc90cb54591ac705afbf9cbeda7109cff85ccbb9c1a240358325c010752df71e2_36.npy'
+# print(obj.csID_2_synID)
+# ss = obj.gen_SynLabel( data_path=ss_op_path)
+# print(ss.shape)
+#
+# print(obj.synID_to_desc)
+# print('generateSynLabel', ss[300,550:575])
+#
+#
+# ss_mask_path = './../../Data/img/1472_SS_D_81b60ba6e44150ac736bc7f21182d49c094afeb0b6b06aba474a3114458dad3972eba78147d60b9b799784e70f0dd41d52509748c62b3b588f8bda50f7d8d163_21.png'
+# img = cv2.cvtColor(cv2.imread(ss_mask_path, cv2.IMREAD_COLOR), cv2.COLOR_BGR2RGB)
+# import matplotlib.pyplot as plt
+# plt.imshow(img)
+# plt.show()
+# print('>',img[300,550:575])
+# res = obj.process_SegMask(ss_mask_path)
+# print(res[300,550:575])
+

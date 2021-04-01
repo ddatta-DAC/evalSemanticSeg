@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='evalSemanticSeg',
-      version='0.0.2',
+      version='0.0.4',
       description='Evaluate semantic segmentation for cutomized data, for models trained on cityscapes',
       url='https://github.com/ddatta-DAC/evalSemanticSeg',
       author='Debanjan Datta',

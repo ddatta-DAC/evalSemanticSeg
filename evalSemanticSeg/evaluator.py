@@ -21,7 +21,7 @@ class metrics_object:
         assert y_pred.shape[1] == y_true.shape[1]
         assert y_pred.shape[0] == y_true.shape[0]
         self.metric.update_state(
-            y_pred, y_true
+            y_true, y_pred
         )
         self.reset()
         result = self.metric.result().numpy()

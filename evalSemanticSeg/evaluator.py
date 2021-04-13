@@ -3,28 +3,61 @@ import sys
 import numpy as np
 
 # ------------------------------
+import pandas as pd
+
 sys.path.append('.')
-import tensorflow as tf
+'''
+Obtain valid_class_labels from annoattor object
+'''
+
 
 class metrics_object:
-    def __init__(self,num_classes=19):
-        self.metric = tf.keras.metrics.MeanIoU(num_classes=num_classes)
-        self.reset()
+    def __init__(self, valid_class_labels):
+        self.valid_class_labels = valid_class_labels
+        return
 
-    def reset(self):
-        self.metric.reset_states()
+    # -------------------------------
+    # Ensure that the prediction has values 1...n for valid labels
+    # 0 is meant for unknown
+    # -------------------------------
+    def evaluate(
+            self,
+            ground_truth,
+            prediction
+    ):
+        result_dict = {}
+        for _class_label_ in self.valid_class_labels:
+            mask = np.ones(ground_truth.shape, dtype=int)
+            mask = mask * int(_class_label_)
+            gt = np.equal(ground_truth, mask).astype(int)
+            pred = np.equal(prediction, mask).astype(int)
 
-    # ----------------------------------------
-    # Single image
-    # ----------------------------------------
-    def mIoU(self, y_pred, y_true):
-        assert y_pred.shape[1] == y_true.shape[1]
-        assert y_pred.shape[0] == y_true.shape[0]
-        self.metric.update_state(
-            y_true, y_pred
-        )
-        self.reset()
-        result = self.metric.result().numpy()
-        return result
+            _intersection = np.logical_and(gt, pred)
+            _union = np.logical_or(gt, pred)
 
+            if np.sum(_union) > 0:
+                IoU = np.sum(_intersection) / np.sum(_union)
+            else:
+                IoU = 0
+            result_dict[_class_label_] = IoU
+        return result_dict
 
+    '''
+    Helper function to assimilate the results of multiple images
+    '''
+
+    def collate(self, list_result_dict, synID_to_desc=None):
+        results = {c: [] for c in self.valid_class_labels}
+        for _dict in list_result_dict:
+            for c, v in _dict.items():
+                results[c].append(v)
+
+        for c in self.valid_class_labels:
+            results[c] = np.mean(results[c])
+        if synID_to_desc is not None:
+            labelled_results = {}
+            for c in self.valid_class_labels:
+                labelled_results[synID_to_desc[c]] = results[c]
+            return labelled_results
+        else:
+            return results

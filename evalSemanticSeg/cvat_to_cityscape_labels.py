@@ -15,6 +15,7 @@ cvat_2_cityscapes = {
     'vegetation': 'vegetation',
     'drivable_road': 'road',
     'road_marking' : 'road',
+    'shoulder': 'road',
     'car': 'car',
     'bus': 'bus',
     'intersection': 'road',
